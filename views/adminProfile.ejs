@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile - <%= admin.name %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body id="page-body" class="bg-gray-100 min-h-screen transition-colors duration-500">
+    <!-- Navigation -->
+    <nav id="nav-bar" class="bg-white shadow-md px-8 py-4 flex justify-between items-center transition-all duration-500">
+        <h1 id="nav-logo" class="text-xl font-bold text-blue-600">Admin Portal</h1>
+        <div class="flex items-center space-x-4">
+            <span id="nav-user" class="text-gray-700 font-medium hidden md:inline">Admin: <%= admin.name %></span>
+            <a href="/secure/admin" class="text-blue-500 hover:text-blue-700 text-sm font-bold">Dashboard</a>
+            <a href="/auth/logout" class="text-red-500 hover:text-red-700 font-semibold">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Theme Switcher Floating Button -->
+    <div class="fixed bottom-8 right-8 z-50">
+        <button onclick="toggleThemeMenu()" class="bg-indigo-600 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.172-1.172a4 4 0 115.656 5.656L11 17.657V7.343z" />
+            </svg>
+        </button>
+        <div id="theme-menu" class="hidden absolute bottom-20 right-0 bg-white shadow-2xl rounded-xl p-4 w-48 border border-gray-200 animate-bounce-short">
+            <p class="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">Select Theme</p>
+            <button onclick="setTheme('light')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium text-blue-600">Classic Blue</button>
+            <button onclick="setTheme('monochrome')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium text-black">Black & White</button>
+            <button onclick="setTheme('inferno')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium text-red-600">Red & Black</button>
+            <button onclick="setTheme('cyber')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium text-yellow-500">Cyber Yellow</button>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto p-4 md:p-12">
+        <div id="profile-card" class="bg-white shadow-2xl rounded-3xl overflow-hidden transition-all duration-500">
+            <!-- Header/Cover Area -->
+            <div id="card-header" class="h-48 bg-gradient-to-r from-blue-600 to-indigo-700 relative transition-all duration-500">
+                <div class="absolute -bottom-16 left-8 md:left-12">
+                    <div class="h-32 w-32 md:h-40 md:w-40 rounded-3xl border-4 border-white shadow-xl overflow-hidden bg-gray-200">
+                        <% if (admin.profilePic) { %>
+                            <img src="/<%= admin.profilePic.replace(/\\/g, '/') %>" alt="Profile" class="w-full h-full object-cover">
+                        <% } else { %>
+                            <div class="w-full h-full flex items-center justify-center text-5xl font-bold text-gray-400">
+                                <%= admin.name.charAt(0) %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-20 pb-12 px-8 md:px-12">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div>
+                        <h2 id="card-name" class="text-4xl font-black text-gray-800 leading-tight"><%= admin.name %></h2>
+                        <p id="card-role" class="text-indigo-600 font-bold tracking-widest uppercase text-sm mb-4"><%= admin.role %> Administrator</p>
+                        <p id="card-bio" class="text-gray-600 max-w-xl italic leading-relaxed">
+                            <%= admin.bio || "No bio added yet. Add a professional bio to showcase your expertise." %>
+                        </p>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="/secure/edit/<%= admin._id %>" id="btn-edit" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-700 hover:shadow-blue-200 transition-all">
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                    <div id="box-1" class="bg-gray-50 p-6 rounded-2xl border border-gray-100 transition-all duration-500">
+                        <span class="block text-xs font-black text-gray-400 uppercase mb-2">Location</span>
+                        <div class="flex items-center text-gray-800 font-bold">
+                            <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <%= admin.city || 'N/A' %>, <%= admin.country || 'N/A' %>
+                        </div>
+                    </div>
+                    <div id="box-2" class="bg-gray-50 p-6 rounded-2xl border border-gray-100 transition-all duration-500">
+                        <span class="block text-xs font-black text-gray-400 uppercase mb-2">Email Address</span>
+                        <div class="flex items-center text-gray-800 font-bold">
+                            <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <%= admin.email %>
+                        </div>
+                    </div>
+                    <div id="box-3" class="bg-gray-50 p-6 rounded-2xl border border-gray-100 transition-all duration-500">
+                        <span class="block text-xs font-black text-gray-400 uppercase mb-2">Joined Date</span>
+                        <div class="flex items-center text-gray-800 font-bold">
+                            <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <%= new Date(admin.createdAt).toLocaleDateString() %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleThemeMenu() {
+            document.getElementById('theme-menu').classList.toggle('hidden');
+        }
+
+        function setTheme(theme) {
+            const body = document.getElementById('page-body');
+            const nav = document.getElementById('nav-bar');
+            const card = document.getElementById('profile-card');
+            const header = document.getElementById('card-header');
+            const boxes = [document.getElementById('box-1'), document.getElementById('box-2'), document.getElementById('box-3')];
+            const editBtn = document.getElementById('btn-edit');
+            const textElements = [document.getElementById('card-name'), document.getElementById('card-bio'), document.getElementById('nav-user')];
+
+            // Reset classes
+            body.className = 'min-h-screen transition-colors duration-500 ';
+            card.className = 'shadow-2xl rounded-3xl overflow-hidden transition-all duration-500 ';
+            nav.className = 'shadow-md px-8 py-4 flex justify-between items-center transition-all duration-500 ';
+            header.className = 'h-48 relative transition-all duration-500 ';
+            editBtn.className = 'px-8 py-3 rounded-2xl font-bold shadow-lg transition-all ';
+
+            if (theme === 'monochrome') {
+                body.classList.add('bg-zinc-900');
+                card.classList.add('bg-white', 'text-black');
+                nav.classList.add('bg-black', 'border-b', 'border-zinc-800');
+                header.classList.add('bg-black');
+                editBtn.classList.add('bg-black', 'text-white');
+                boxes.forEach(b => b.className = 'bg-zinc-50 p-6 rounded-2xl border border-zinc-200');
+                textElements.forEach(t => t.style.color = 'black');
+            } 
+            else if (theme === 'inferno') {
+                body.classList.add('bg-black');
+                card.classList.add('bg-zinc-900', 'border', 'border-red-600');
+                nav.classList.add('bg-zinc-950', 'border-b', 'border-red-900');
+                header.classList.add('bg-gradient-to-r', 'from-red-900', 'to-black');
+                editBtn.classList.add('bg-red-600', 'text-white', 'hover:bg-red-700');
+                boxes.forEach(b => b.className = 'bg-black p-6 rounded-2xl border border-red-900/30 text-white');
+                textElements.forEach(t => t.style.color = 'white');
+                document.getElementById('card-role').className = 'text-red-500 font-bold tracking-widest uppercase text-sm mb-4';
+            }
+            else if (theme === 'cyber') {
+                body.classList.add('bg-zinc-950');
+                card.classList.add('bg-zinc-900', 'border-2', 'border-yellow-400');
+                nav.classList.add('bg-black', 'border-b-2', 'border-yellow-400');
+                header.classList.add('bg-yellow-400');
+                editBtn.classList.add('bg-yellow-400', 'text-black', 'hover:bg-yellow-500');
+                boxes.forEach(b => b.className = 'bg-black p-6 rounded-2xl border border-yellow-400/20 text-yellow-400');
+                textElements.forEach(t => t.style.color = '#facc15');
+                document.getElementById('card-role').className = 'text-yellow-200 font-bold tracking-widest uppercase text-sm mb-4';
+            }
+            else {
+                // Default Light Theme
+                body.classList.add('bg-gray-100');
+                card.classList.add('bg-white');
+                nav.classList.add('bg-white');
+                header.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-indigo-700');
+                editBtn.classList.add('bg-blue-600', 'text-white');
+                boxes.forEach(b => b.className = 'bg-gray-50 p-6 rounded-2xl border border-gray-100');
+                textElements.forEach(t => t.style.color = '');
+                document.getElementById('card-role').className = 'text-indigo-600 font-bold tracking-widest uppercase text-sm mb-4';
+            }
+
+            localStorage.setItem('admin-theme', theme);
+            toggleThemeMenu();
+        }
+
+        // Auto-load theme
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('admin-theme') || 'light';
+            if(savedTheme !== 'light') setTheme(savedTheme);
+        };
+    </script>
+</body>
+</html>

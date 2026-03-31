@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - <%= admin.name %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body id="page-body" class="bg-gray-900 text-gray-100 min-h-screen transition-all duration-500">
+    <nav id="nav-bar" class="bg-gray-800 shadow-md px-8 py-4 flex justify-between items-center border-b border-gray-700 transition-all duration-500">
+        <h1 id="nav-logo" class="text-xl font-black text-white tracking-tighter">Aegis<span class="text-blue-400">Vault</span> <span class="text-[10px] bg-blue-600/20 text-blue-400 px-2 py-1 rounded ml-2 uppercase tracking-[0.2em]">Console</span></h1>
+        <div class="flex items-center space-x-6">
+            <div class="hidden md:block text-right">
+                <p class="text-xs text-gray-400 uppercase font-black">Admin</p>
+                <p class="text-sm font-bold text-white"><%= admin.name %></p>
+            </div>
+            <a href="/secure/profile" class="bg-blue-600/10 text-blue-400 border border-blue-600/20 px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-600 hover:text-white transition-all">Profile</a>
+            <a href="/auth/logout" class="bg-red-600 px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-red-900/20 hover:bg-red-700 transition-all">Logout</a>
+        </div>
+    </nav>
+
+    <div class="fixed bottom-8 right-8 z-50">
+        <button onclick="toggleThemeMenu()" class="bg-blue-600 p-4 rounded-full shadow-2xl hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.172-1.172a4 4 0 115.656 5.656L11 17.657V7.343z" /></svg>
+        </button>
+        <div id="theme-menu" class="hidden absolute bottom-20 right-0 bg-gray-800 shadow-2xl rounded-xl p-4 w-48 border border-gray-700">
+            <button onclick="setTheme('light')" class="w-full text-left px-3 py-2 hover:bg-gray-700 rounded text-sm font-medium text-blue-400">Classic Blue</button>
+            <button onclick="setTheme('monochrome')" class="w-full text-left px-3 py-2 hover:bg-gray-700 rounded text-sm font-medium text-white">Black & White</button>
+            <button onclick="setTheme('inferno')" class="w-full text-left px-3 py-2 hover:bg-gray-700 rounded text-sm font-medium text-red-500">Red & Black</button>
+            <button onclick="setTheme('cyber')" class="w-full text-left px-3 py-2 hover:bg-gray-700 rounded text-sm font-medium text-yellow-400">Cyber Yellow</button>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- User Management -->
+        <div id="main-content" class="lg:col-span-2">
+            <h2 class="text-3xl font-black mb-8 flex items-center tracking-tight">
+                <span class="mr-2 text-blue-400">👥</span> User Management
+            </h2>
+            <div class="bg-gray-800/50 backdrop-blur-md rounded-3xl overflow-hidden shadow-2xl border border-gray-700/50">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-900/50 text-gray-400 uppercase text-[10px] font-black tracking-widest">
+                        <tr>
+                            <th class="px-6 py-4">User Details</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700/50">
+                        <% users.forEach(u => { %>
+                        <tr class="hover:bg-white/5 transition-colors group">
+                            <td class="px-6 py-4">
+                                <div class="font-bold text-white group-hover:text-blue-400 transition-colors"><%= u.name %></div>
+                                <div class="text-xs text-gray-400"><%= u.email %></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase <%= u.isDeleted ? 'bg-red-900 text-red-200' : 'bg-green-900 text-green-200' %>">
+                                    <%= u.isDeleted ? 'Suspended' : 'Active' %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <form action="<%= u.isDeleted ? '/secure/restore' : '/secure/delete' %>" method="POST" class="inline">
+                                    <input type="hidden" name="id" value="<%= u._id %>">
+                                    <button class="text-xs uppercase tracking-tighter font-black px-4 py-2 rounded-lg transition-all <%= u.isDeleted ? 'bg-blue-600/10 text-blue-400 hover:bg-blue-600 hover:text-white' : 'bg-red-600/10 text-red-400 hover:bg-red-600 hover:text-white' %>">
+                                        <%= u.isDeleted ? 'Restore Account' : 'Suspend' %>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Image Overview -->
+            <h2 class="text-3xl font-black mt-16 mb-8 flex items-center tracking-tight">
+                <span class="mr-2 text-green-400">🖼️</span> Global Image Gallery
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <% docs.forEach(doc => { %>
+                    <div class="bg-gray-800/40 hover:bg-gray-800/60 transition-all p-5 rounded-3xl border border-gray-700/50 flex space-x-5 group">
+                        <div class="relative overflow-hidden rounded-2xl w-24 h-24 shrink-0">
+                            <img src="/<%= doc.imageUrl.replace(/\\/g, '/') %>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-black text-white text-base leading-tight"><%= doc.title %></h3>
+                            <p class="text-xs text-gray-500 mt-1">Uploaded by <span class="text-gray-300 font-bold"><%= doc.user ? doc.user.name : 'Unknown' %></span></p>
+                            <div class="mt-4 flex space-x-2">
+                                <form action="/image/delete" method="POST">
+                                    <input type="hidden" name="id" value="<%= doc._id %>">
+                                    <button class="text-red-500 text-[10px] font-black uppercase tracking-widest hover:text-red-300 transition-colors">Delete Permanently</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+                <% if (docs.length === 0) { %>
+                    <div class="col-span-full py-8 text-center text-gray-500">
+                        No images uploaded yet.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Audit Logs -->
+        <div class="lg:col-span-1">
+            <h2 class="text-3xl font-black mb-8 flex items-center tracking-tight">
+                <span class="mr-2 text-yellow-400">📋</span> Recent Activity
+            </h2>
+            <div class="bg-gray-800/30 backdrop-blur-md rounded-3xl p-6 shadow-2xl border border-gray-700/50 space-y-6">
+                <% if (audits && audits.length > 0) { %>
+                    <% audits.forEach(log => { %>
+                        <div class="relative pl-6 border-l-2 border-gray-700 group">
+                            <div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-blue-500 group-hover:scale-150 transition-transform shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                            <p class="text-sm font-bold text-gray-200 leading-tight"><%= log.action %></p>
+                            <div class="mt-2 flex flex-col space-y-1">
+                                <span class="text-[10px] font-black text-blue-400 uppercase tracking-widest"><%= log.user ? log.user.name : 'System' %></span>
+                                <span class="text-[10px] text-gray-500"><%= new Date(log.time).toLocaleString() %></span>
+                            </div>
+                        </div>
+                    <% }) %>
+                    <button class="w-full py-3 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors border-t border-gray-700 mt-4">View All Logs</button>
+                <% } else { %>
+                    <p class="text-gray-500 italic text-sm text-center py-4">No recent activity logs.</p>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleThemeMenu() {
+            document.getElementById('theme-menu').classList.toggle('hidden');
+        }
+
+        function setTheme(theme) {
+            const body = document.getElementById('page-body');
+            const nav = document.getElementById('nav-bar');
+            const logo = document.getElementById('nav-logo');
+
+            // Base classes reset
+            body.className = 'text-gray-100 min-h-screen transition-all duration-500 ';
+            nav.className = 'shadow-md px-8 py-4 flex justify-between items-center border-b transition-all duration-500 ';
+
+            if (theme === 'monochrome') {
+                body.classList.add('bg-zinc-900');
+                nav.classList.add('bg-black', 'border-zinc-800');
+                logo.className = 'text-xl font-bold text-white';
+            } else if (theme === 'inferno') {
+                body.classList.add('bg-black');
+                nav.classList.add('bg-zinc-950', 'border-red-900');
+                logo.className = 'text-xl font-bold text-red-600';
+            } else if (theme === 'cyber') {
+                body.classList.add('bg-black');
+                nav.classList.add('bg-black', 'border-yellow-400');
+                logo.className = 'text-xl font-bold text-yellow-400';
+            } else {
+                // Classic Blue (Default)
+                body.classList.add('bg-gray-900');
+                nav.classList.add('bg-gray-800', 'border-gray-700');
+                logo.className = 'text-xl font-bold text-blue-400';
+            }
+            localStorage.setItem('admin-theme', theme);
+            if(!document.getElementById('theme-menu').classList.contains('hidden')) toggleThemeMenu();
+        }
+
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('admin-theme') || 'light';
+            setTheme(savedTheme);
+        };
+    </script>
+</body>
+</html>

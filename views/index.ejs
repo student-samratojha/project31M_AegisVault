@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AegisVault - Advanced Asset Protection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body id="page-body" class="bg-gray-100 h-screen flex flex-col items-center justify-center transition-all duration-500">
+    <!-- Theme Switcher -->
+    <div class="fixed top-8 right-8 z-50">
+        <button onclick="toggleThemeMenu()" class="bg-white/20 backdrop-blur-md p-3 rounded-full shadow-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.172-1.172a4 4 0 115.656 5.656L11 17.657V7.343z" /></svg>
+        </button>
+        <div id="theme-menu" class="hidden absolute top-14 right-0 bg-white shadow-2xl rounded-xl p-4 w-48 border border-gray-200">
+            <button onclick="setTheme('light')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium">Classic Blue</button>
+            <button onclick="setTheme('monochrome')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium">Black & White</button>
+            <button onclick="setTheme('inferno')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium">Red & Black</button>
+            <button onclick="setTheme('cyber')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium">Cyber Yellow</button>
+        </div>
+    </div>
+
+    <div id="index-card" class="text-center p-12 bg-white shadow-2xl rounded-3xl border border-gray-100 transition-all duration-500 max-w-lg">
+        <h1 id="card-title" class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">Aegis<span class="text-blue-600">Vault</span></h1>
+        <p class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-8">Professional Security Engine</p>
+        
+        <!-- Workflow Section -->
+        <div class="grid grid-cols-3 gap-4 mb-10 text-[9px] font-black uppercase tracking-widest text-slate-500">
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <span class="block text-xl mb-2">🛡️</span>
+                Protocol
+            </div>
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <span class="block text-xl mb-2">💎</span>
+                Storage
+            </div>
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <span class="block text-xl mb-2">🔍</span>
+                Audit
+            </div>
+        </div>
+
+        <p id="card-desc" class="text-slate-500 mb-10 text-sm leading-relaxed px-4">
+            The industry standard for personal asset protection. Experience military-grade encryption with a high-fidelity interface designed for elite document management.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center px-4">
+            <a href="/auth/login" id="btn-login" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg hover:scale-105 transition-all text-center">
+                Open Vault
+            </a>
+            <a href="/auth/register" id="btn-register" class="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black shadow-lg hover:scale-105 transition-all text-center">
+                Initialize
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleThemeMenu() { document.getElementById('theme-menu').classList.toggle('hidden'); }
+        function setTheme(theme) {
+            const body = document.getElementById('page-body');
+            const card = document.getElementById('index-card');
+            const title = document.getElementById('card-title');
+            const btn = document.getElementById('btn-login');
+            const desc = document.getElementById('card-desc');
+
+            body.className = 'h-screen flex flex-col items-center justify-center transition-all duration-500 ';
+            card.className = 'text-center p-12 rounded-3xl shadow-2xl border transition-all duration-500 max-w-lg ';
+
+            if (theme === 'monochrome') {
+                body.classList.add('bg-zinc-900'); card.classList.add('bg-white', 'border-zinc-200');
+                title.className = 'text-5xl font-black text-black mb-2'; desc.className = 'text-zinc-500 mb-10 text-sm';
+                btn.className = 'bg-black text-white px-10 py-4 rounded-2xl font-black shadow-lg hover:scale-105 transition-all text-center';
+            } else if (theme === 'inferno') {
+                body.classList.add('bg-black'); card.classList.add('bg-zinc-900', 'border-red-600');
+                title.className = 'text-5xl font-black text-red-600 mb-6'; desc.className = 'text-zinc-400 mb-10 text-lg';
+                btn.className = 'bg-red-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg hover:scale-105 transition-all text-center';
+            } else if (theme === 'cyber') {
+                body.classList.add('bg-black'); card.classList.add('bg-zinc-900', 'border-yellow-400');
+                title.className = 'text-5xl font-black text-yellow-400 mb-6'; desc.className = 'text-yellow-100/50 mb-10 text-lg';
+                btn.className = 'bg-yellow-400 text-black px-10 py-4 rounded-2xl font-black shadow-lg hover:scale-105 transition-all text-center';
+            } else {
+                body.classList.add('bg-gray-100'); card.classList.add('bg-white', 'border-gray-100');
+                title.className = 'text-5xl font-black text-blue-600 mb-6'; desc.className = 'text-gray-500 mb-10 text-lg';
+                btn.className = 'bg-blue-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg hover:scale-105 transition-all text-center';
+            }
+            localStorage.setItem('user-theme', theme);
+            if(!document.getElementById('theme-menu').classList.contains('hidden')) toggleThemeMenu();
+        }
+        window.onload = () => { setTheme(localStorage.getItem('user-theme') || 'light'); };
+    </script>
+</body>
+</html>

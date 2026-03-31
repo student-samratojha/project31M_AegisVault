@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body id="page-body" class="bg-gray-100 min-h-screen p-8 transition-all duration-500">
+    <!-- Theme Switcher -->
+    <div class="fixed top-8 right-8 z-50">
+        <button onclick="toggleThemeMenu()" class="bg-white/20 backdrop-blur-md p-3 rounded-full shadow-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.172-1.172a4 4 0 115.656 5.656L11 17.657V7.343z" /></svg>
+        </button>
+        <div id="theme-menu" class="hidden absolute top-14 right-0 bg-white shadow-2xl rounded-xl p-4 w-48 border border-gray-200 z-[60]">
+            <button onclick="setTheme('light')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium">Classic Blue</button>
+            <button onclick="setTheme('monochrome')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium">Black & White</button>
+            <button onclick="setTheme('inferno')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium">Red & Black</button>
+            <button onclick="setTheme('cyber')" class="w-full text-left px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium">Cyber Yellow</button>
+        </div>
+    </div>
+
+    <div id="edit-card" class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-gray-100 transition-all duration-500">
+        <h2 id="card-title" class="text-2xl font-bold mb-6 text-gray-800">Edit Profile: <%= user.name %></h2>
+        <form action="/secure/edit" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <input type="hidden" name="id" value="<%= user._id %>">
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold mb-1">Full Name</label>
+                    <input type="text" name="name" value="<%= user.name %>" class="w-full border p-2 rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">Email</label>
+                    <input type="email" name="email" value="<%= user.email %>" class="w-full border p-2 rounded">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold mb-1">City</label>
+                    <input type="text" name="city" value="<%= user.city || '' %>" class="w-full border p-2 rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1">Country</label>
+                    <input type="text" name="country" value="<%= user.country || '' %>" class="w-full border p-2 rounded">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold mb-1">Bio</label>
+                <textarea name="bio" class="w-full border p-2 rounded h-24"><%= user.bio || '' %></textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-bold mb-1">Update Profile Picture</label>
+                <input type="file" name="profilePic" accept="image/*" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            </div>
+
+            <button type="submit" id="btn-submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition-all">Save Profile</button>
+            <a href="/secure/user" class="text-gray-500 ml-4 hover:underline">Cancel</a>
+        </form>
+    </div>
+
+    <script>
+        function toggleThemeMenu() {
+            document.getElementById('theme-menu').classList.toggle('hidden');
+        }
+
+        function setTheme(theme) {
+            const body = document.getElementById('page-body');
+            const card = document.getElementById('edit-card');
+            const title = document.getElementById('card-title');
+            const btn = document.getElementById('btn-submit');
+
+            body.className = 'min-h-screen p-8 transition-all duration-500 ';
+            card.className = 'max-w-2xl mx-auto p-8 rounded-2xl shadow-lg border transition-all duration-500 ';
+
+            if (theme === 'monochrome') {
+                body.classList.add('bg-zinc-900'); card.classList.add('bg-white', 'border-zinc-200');
+                title.className = 'text-2xl font-black text-black mb-6';
+                btn.className = 'bg-black text-white px-6 py-2 rounded-lg font-bold hover:bg-zinc-800 transition-all';
+            } else if (theme === 'inferno') {
+                body.classList.add('bg-black'); card.classList.add('bg-zinc-900', 'border-red-600');
+                title.className = 'text-2xl font-black text-red-600 mb-6';
+                btn.className = 'bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition-all';
+            } else if (theme === 'cyber') {
+                body.classList.add('bg-black'); card.classList.add('bg-zinc-900', 'border-2', 'border-yellow-400');
+                title.className = 'text-2xl font-black text-yellow-400 mb-6';
+                btn.className = 'bg-yellow-400 text-black px-6 py-2 rounded-lg font-bold hover:bg-yellow-500 transition-all';
+            } else {
+                body.classList.add('bg-gray-100'); card.classList.add('bg-white', 'border-gray-100');
+                title.className = 'text-2xl font-bold text-gray-800 mb-6';
+                btn.className = 'bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition-all';
+            }
+            localStorage.setItem('user-theme', theme);
+            if(!document.getElementById('theme-menu').classList.contains('hidden')) toggleThemeMenu();
+        }
+        window.onload = () => { setTheme(localStorage.getItem('user-theme') || 'light'); };
+    </script>
+</body>
+</html>

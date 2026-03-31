@@ -1,0 +1,23 @@
+const express = require('express');
+require('dotenv').config();
+const connectDB = require('./db/db');
+const authRoutes = require('./routes/auth.routes');
+const secureRoutes = require('./routes/secure.routes');
+const imageRoutes = require('./routes/image.routes');
+const app = express();
+const path = require('path');
+const cookieParser = require('cookie-parser');
+connectDB();
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(cookieParser());
+app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/auth', authRoutes);
+app.use('/secure', secureRoutes);
+app.use('/image', imageRoutes);
+app.get('/', (req, res) => {
+  res.render('index');
+});
+module.exports = app;

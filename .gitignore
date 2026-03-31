@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Environment Variables
+.env
+
+# User Uploads (Vault Storage)
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor Settings
+.vscode/
+.idea/
+.DS_Store
